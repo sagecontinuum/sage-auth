@@ -79,7 +79,7 @@ SOCIAL_AUTH_GLOBUS_SECRET = os.environ.get('Globus_Auth_Client_Secret')
 SOCIAL_AUTH_GLOBUS_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
 }
-
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 
 
 WSGI_APPLICATION = 'webapp.wsgi.application'
