@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+import json
 
 def home(request):
     uuid = None
@@ -14,3 +16,24 @@ def home(request):
                   {'uuid': uuid,
                   'access_token': access_token,
                   'refresh_token': refresh_token})
+
+
+
+def token(request):
+    if request.method == 'GET':
+        
+        #request_data = json.load(request.raw_post_data)
+        # do something
+        print("token here", flush=True)
+        response_data = {}
+        if request.user.is_authenticated:
+            response_data['token'] = 'I_AM_A_TOKEN'
+        else:
+            response_data['token'] = 'I_AM_A_TOKEN (but you are not logged in)'
+
+        response_data['message'] = 'some message'
+        return HttpResponse(
+            json.dumps(response_data),
+            content_type='application/json'
+        )
+    pass

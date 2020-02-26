@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Django Web App</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
 <body>
     <div>
@@ -26,6 +27,44 @@
         <a href="{% url 'social:begin' 'globus' %}?next={{ request.path }}">Login with Globus</a>
     {% endif %}
     </p>
+    <p>
+        test
+        <div id="output_box">empty output_box</div>
+        <input type='button' onclick='GetToken()' value='get token'>
+
+        <script>
+            //function GetToken(){
+                var GetToken = function() {
+  $.ajax({
+    type: 'GET',
+    contentType: 'application/json',
+    dataType: 'json',
+    url: '/token',
+    // The data sent to the Django view in JSON format
+    data: JSON.stringify({
+      formField: $('#body').val()
+    }),
+    error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("Status: " + textStatus); alert("Error: " + errorThrown); 
+    },   
+    success: function (data) {
+        
+        console.log(data);
+        console.log(data.token);
+        //$('#output-box').html(data);
+        $('#output_box').html(data.token)
+    }
+
+  });
+}
+
+
+            </script>
+
+
+
+        
+        </p>
     </div>
 </body>
 </html>
