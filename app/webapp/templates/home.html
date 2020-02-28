@@ -19,8 +19,8 @@
         &nbsp; Date joined: {{ user.date_joined }}<br/>
         &nbsp; Last login: {{ user.last_login }}<br/>
         &nbsp; UUID: {{ uuid }}<br>
-        &nbsp; Access token: {{ access_token }}<br/>
-        &nbsp; Refresh token: {{ refresh_token }}<br/>
+        <!-- &nbsp; Access token: {{ access_token }}<br/>
+        &nbsp; Refresh token: {{ refresh_token }}<br/> -->
         <br/>
         <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
     {% else %}
@@ -29,7 +29,8 @@
     </p>
     <p>
         test
-        <div id="output_box">empty output_box</div>
+        <div id="token_box">empty output_box</div>
+        <div id="expires_box">-</div>
         <input type='button' onclick='GetToken()' value='get token'>
 
         <script>
@@ -51,7 +52,8 @@
         
         console.log(data);
         console.log(data.token);
-        $('#output_box').html(data.token)
+        $('#token_box').html("Token: " + data.token)
+        $('#expires_box').html("Expires: " + data.expires)
     }
 
   });
