@@ -1,0 +1,30 @@
+version: '3'
+# for development, testing purposes only
+# login via Globus will not work as this requires SSL and a dmoina registered withy Globus
+
+services:
+  db:
+    image: mysql:8
+    env_file: mysql.env
+    volumes:
+      - SAGE-UI-DB:/var/lib/mysql
+  sage-ui:
+    build: .
+    entrypoint:
+          - ash 
+          - -c
+          - 'while [ $$(nc -z db 3306 ; echo $$?) != 0 ] ; do echo "wait..." ; sleep 2 ; done ;
+          python manage.py migrate ; 
+          python manage.py runserver 0.0.0.0:80'
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+    
+    env_file: mysql.env
+    environment: 
+      - Globus_Auth_Client_ID="${Globus_Auth_Client_ID}"
+      - Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}"
+
+volumes:
+  SAGE-UI-DB:
