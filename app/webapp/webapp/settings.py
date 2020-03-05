@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -89,21 +90,38 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+
+
+
+
+DATABASES=None
+
+USE_SQLITE3=os.environ.get('USE_SQLITE3')
+if USE_SQLITE3:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
     }
-}
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'HOST': 'mysql',
-#        'USER' : 'test',
-#        'PASSWORD'  : 'test',
-#        'NAME' : 'TEST'
-#    }
-#}
+else: 
+    MYSQL_HOST = os.environ.get('MYSQL_HOST')
+    if MYSQL_HOST is None:
+        sys.exit("MYSQL_HOST is not defined")
+    MYSQL_USER = os.environ.get('MYSQL_USER')
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD')
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': MYSQL_HOST,
+            'USER' : MYSQL_USER,
+            'PASSWORD'  : MYSQL_PASSWORD,
+            'NAME' : 'SAGEDB'
+        }
+    }
+
+
 
 
 
