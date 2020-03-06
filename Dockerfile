@@ -1,13 +1,13 @@
 
 
-# docker build -t sage/sage-ui .
+# docker build -t sagecontinuum/sage-ui .
 
 #ash
-# docker run -ti --rm --name sage-ui -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash sage/sage-ui
+# docker run -ti --rm --name sage-ui -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash sagecontinuum/sage-ui
 
 
 #webserver
-# docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" sage/sage-ui
+# docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" sagecontinuum/sage-ui
 
 
 FROM python:3.8-alpine 

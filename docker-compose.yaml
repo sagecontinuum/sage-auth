@@ -11,6 +11,7 @@ services:
       - SAGE-UI-DB:/var/lib/mysql
 
   sage-ui:
+    image: sagecontinuum/sage-ui
     build: .
     entrypoint: 
           - /testing-entrypoint.sh
