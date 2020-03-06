@@ -16,6 +16,7 @@ services:
           - /testing-entrypoint.sh
     volumes:
         - ${PWD}/testing-entrypoint.sh:/testing-entrypoint.sh:ro
+        - ${PWD}/app/:/usr/src/app
     ports:
       - "8000:80"
     depends_on:
