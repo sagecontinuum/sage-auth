@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  MYSQL_DATABASE: SAGEDB
+  MYSQL_HOST: db
+  MYSQL_PASSWORD: test
+  MYSQL_ROOT_PASSWORD: testtest
+  MYSQL_USER: test
+kind: ConfigMap
+metadata:
+  name: sage-ui-mysql-env
+  namespace: sage

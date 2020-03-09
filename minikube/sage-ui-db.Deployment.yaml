@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: db
+  name: db
+  namespace: sage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        k8s-app: db
+    spec:
+      containers:
+      - image: mysql:8
+        name: db
+        #resources:
+        #  limits:
+        #    cpu: 1
+        #    memory: 1Gi
+        #  requests:
+        #    memory: 1Gi
+        #    cpu: 1
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: sage-ui-db
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_DATABASE
+              name: sage-ui-mysql-env
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_HOST
+              name: sage-ui-mysql-env
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_PASSWORD
+              name: sage-ui-mysql-env
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: sage-ui-mysql-env
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_USER
+              name: sage-ui-mysql-env
+        ports:
+          - name: db
+            containerPort: 3306
+      restartPolicy: Always
+      volumes:
+      - name: sage-ui-db
+        persistentVolumeClaim:
+          claimName: sage-ui-db
+

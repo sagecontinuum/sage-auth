@@ -1,0 +1,73 @@
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sage-ui
+  namespace: sage
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: sage-ui
+  template:
+    metadata:
+      labels:
+        k8s-app: sage-ui
+    spec:
+      initContainers:
+      - name: sage-ui-init
+        image: sagecontinuum/sage-ui:latest
+        command:
+          - ash
+          - -c  
+          - while [ $(nc -zv db 3306; echo $?) != 0 ] ; do echo "wait..." ; sleep 2; done 
+      containers:
+      - image: sagecontinuum/sage-ui:latest
+        name: sage-ui 
+        env:
+        - name: Globus_Auth_Client_ID
+          valueFrom:
+            secretKeyRef:
+                name: sage-ui
+                key: Globus_Auth_Client_ID
+        - name: Globus_Auth_Client_Secret
+          valueFrom:
+            secretKeyRef:
+                name: sage-ui
+                key: Globus_Auth_Client_Secret
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_DATABASE
+              name: sage-ui-mysql-env
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_HOST
+              name: sage-ui-mysql-env
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_PASSWORD
+              name: sage-ui-mysql-env
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: sage-ui-mysql-env
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              key: MYSQL_USER
+              name: sage-ui-mysql-env
+        ports:
+        - containerPort: 8000
+        #resources:
+        #  limits:
+        #    cpu: 0.1
+        #    memory: 500Mi
+        #  requests:
+        #    memory: 500Mi
+        #    cpu: 0.1
+      restartPolicy: Always
