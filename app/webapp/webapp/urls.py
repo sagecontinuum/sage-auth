@@ -19,7 +19,12 @@ from . import views
 
 
 
+
+
+
 urlpatterns = [
+    path('token_info/', views.TokenInfo.as_view()),
+    
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
     path('', include('django.contrib.auth.urls')), #  enable the ‘Logout’ link
