@@ -27,5 +27,6 @@ services:
       - Globus_Auth_Client_ID="${Globus_Auth_Client_ID}"
       - Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}"
       - ADD_USER="test,test"
+      - DEBUG_VALUE=TRUE
 volumes:
   SAGE-UI-DB:
