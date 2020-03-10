@@ -9,6 +9,11 @@ import pytz
 from datetime import datetime, timedelta
 import string 
 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 def home(request):
@@ -40,6 +45,7 @@ def home(request):
 
 
 def token(request):
+
     if request.method == 'GET':
         
         #request_data = json.load(request.raw_post_data)
@@ -82,3 +88,43 @@ def token(request):
             content_type='application/json'
         )
     pass
+
+
+
+class TokenInfo(APIView):
+    # https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+    
+
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        # example: curl -H 'Accept: application/json; indent=4' -u admin:admin localhost:8000/token_info/
+        
+
+        return Response("hello world")
+
+    def post(self, request, format=None):
+        
+        # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u admin:admin localhost:8000/token_info/
+
+
+        data=request.data # is a QueryDict 
+        token = data.get("token", "")
+
+        tobject = Token.objects.get(tokenValue=token)
+        
+        if datetime.now() < tobject.expires:
+            return Response("expired !")
+
+        return Response("valid: "+tobject.user)
+ #      {
+ # "active": true,
+ # "scope": "read write email",
+ # "client_id": "J8NFmU4tJVgDxKaJFmXTWvaHO",
+ # "username": "aaronpk",
+ # "exp": 1437275311
+#}
+
+        return Response("got: "+token)
+
