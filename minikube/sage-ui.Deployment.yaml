@@ -26,6 +26,8 @@ spec:
       - image: sagecontinuum/sage-ui:latest
         name: sage-ui 
         env:
+        - name: DEBUG_VALUE
+          value: "TRUE"
         - name: Globus_Auth_Client_ID
           valueFrom:
             secretKeyRef:
