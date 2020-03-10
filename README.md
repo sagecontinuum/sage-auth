@@ -14,7 +14,7 @@ In production the default login is authentication delegated to Globus Auth, the 
 
 ## minikube
 
-For instructions go to folder [minikube](minikube).
+For instructions see [minikube](minikube).
 
 
 ## docker-compose
