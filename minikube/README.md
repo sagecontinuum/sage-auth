@@ -31,7 +31,6 @@ kubectl get pod -n sage
 
 kubectl apply -f ./sage-ui.Service.yaml 
 
-minikube service sage-ui --url -n sage
 ```
 
 # ingress
@@ -44,11 +43,7 @@ kubectl apply -f ./sage-ui.Ingress.yaml
 
 # IP address
 
-```
-minikube service sage-ui --url -n sage
-```
-
-Get IP address of minikub and open in browser on port 80
+Get IP address of minikube and open in browser on port 80
 ```bash
 minikube ip
 ```
@@ -60,6 +55,5 @@ kubectl get endpoints -n sage
 kubectl get  ingress -n sage
 
 minikube dashboard
-
 
 ```
