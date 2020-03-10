@@ -4,12 +4,11 @@ metadata:
   name: sage-ui
   namespace: sage
 spec:
-  type: NodePort #(ClusterIP  does not seem to work with ingress)
+  #type: NodePort #(ClusterIP  does not seem to work with ingress)
   ports:
   - port: 80
-    targetPort: 8000
     protocol: TCP
-    name: "name8000"
+    name: "http"
   selector:
     k8s-app: sage-ui
-    
+

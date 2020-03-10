@@ -64,7 +64,7 @@ spec:
               key: MYSQL_USER
               name: sage-ui-mysql-env
         ports:
-        - containerPort: 8000
+        - containerPort: 80
         #resources:
         #  limits:
         #    cpu: 0.1
