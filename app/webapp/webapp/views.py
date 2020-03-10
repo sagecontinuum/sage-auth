@@ -15,6 +15,11 @@ from rest_framework import authentication, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
+
 
 def home(request):
     uuid = None
@@ -127,4 +132,5 @@ class TokenInfo(APIView):
 #}
 
         return Response("got: "+token)
+
 
