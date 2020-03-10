@@ -14,11 +14,13 @@ from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
 
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
-
+from django.utils.dateformat import format as dformat
 
 
 def home(request):
@@ -79,7 +81,7 @@ def token(request):
         if user_uuid == None:
             return HttpResponse("user_uuid is empty", status=500)
 
-        tobject = Token.objects.create(user=user_uuid, tokenValue=tokenValue, expires=expires)
+        tobject = Token.objects.create(user=user_uuid, tokenValue=tokenValue, expires=expires, scope="default")
         
         
         response_data['token'] = tobject.tokenValue
@@ -96,8 +98,10 @@ def token(request):
 
 
 
+# Token introspection API
+# see https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
 class TokenInfo(APIView):
-    # https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+    
     
 
     authentication_classes = [SessionAuthentication, BasicAuthentication]
@@ -114,23 +118,53 @@ class TokenInfo(APIView):
         # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u admin:admin localhost:8000/token_info/
 
 
+
         data=request.data # is a QueryDict 
+       
         token = data.get("token", "")
 
-        tobject = Token.objects.get(tokenValue=token)
-        
-        if datetime.now() < tobject.expires:
-            return Response("expired !")
+        try:
+            tobject = Token.objects.get(tokenValue=token)
+        except Token.DoesNotExist:
+            content = {'error': 'token not found'}
+            return Response(content, status=status.HTTP_410_GONE )
 
-        return Response("valid: "+tobject.user)
- #      {
- # "active": true,
- # "scope": "read write email",
- # "client_id": "J8NFmU4tJVgDxKaJFmXTWvaHO",
- # "username": "aaronpk",
- # "exp": 1437275311
-#}
+        if tobject == None:
+            content = {'error': 'tobject is empty'}
+            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR) 
 
-        return Response("got: "+token)
+        expires = tobject.expires
+
+        if expires == None:
+            content = {'error': 'expires is empty'}
+            return Response(content, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        if timezone.now() > expires:
+            content = {'error': 'token expired ({})'.format(str(expires))}
+            return Response(content, status=status.HTTP_404_NOT_FOUND)
+
+        #user_uuid = None
+        #try:
+        #    user_uuid = request.user.social_auth.get(provider='globus').uid
+        #except:
+        #    # native Django user, this is mostly for testing purposes
+        #    username = request.user.username
+        #    user_uuid = username
+
+        scope = tobject.scope
+        user = tobject.user
+
+        unix_expires = int(dformat(expires, 'U'))
+
+        #return Response("valid: "+tobject.user)
+        content =      {
+            "active": True, # Required. This is a boolean value of whether or not the presented token is currently active. The value should be “true” if the token has been issued by this authorization server, has not been revoked by the user, and has not expired.
+            "scope": scope, # A JSON string containing a space-separated list of scopes associated with this token.
+            "client_id": user, # The client identifier for the OAuth 2.0 client that the token was issued to.
+            "username": user, # A human-readable identifier for the user who authorized this token.
+            "exp": unix_expires, # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire.
+        }
+
+        return Response(content)
 
 
