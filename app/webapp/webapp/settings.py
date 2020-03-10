@@ -25,7 +25,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'r6f-x8mw!owtk$3&^+zh9ocse75ap(7%_y5_8@w+eqbt@y%%z9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+#DEBUG = False
+DEBUG = os.environ['DEBUG_VALUE'] == 'TRUE'
 
 ALLOWED_HOSTS = ['*']
 
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_django',
     'webapp',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -123,6 +125,15 @@ else:
     }
 
 
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+       'rest_framework.authentication.BasicAuthentication',
+   ),
+   #'DEFAULT_PERMISSION_CLASSES': (
+   #     'rest_framework.permissions.IsAdminUser'
+   #),
+}
 
 
 
