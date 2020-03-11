@@ -1,9 +1,9 @@
-# sage-ui
+# SAGE UI
 
 Draft of a website for SAGE to let users authenticate using their institutional identity provider and create tokens for access to other SAGE resources.
 
 
-# test environments 
+# Test environments 
 
 
 Both test environments described below are not to be used in production, they are only for development/testing purposes!
@@ -25,3 +25,46 @@ Starts a local instance of the SAGE UI on [http://localhost:8000/](http://localh
 docker-compose up
 ```
 
+
+# Globus OAuth registration
+
+- Create a globus account.
+- Go to [https://auth.globus.org/v2/web/developers](https://auth.globus.org/v2/web/developers).
+- Create a project.
+- Add new app.
+- Add scopes: profile, urn:globus:auth:scope:auth.globus.org:view_identity_set
+- Specify redirect URL: https://<your-domain>/complete/globus/
+    - This requires SAGE UI to have an SSL certificate!
+- Generate new client secret
+
+SAGE UI has to be started with these two arguments:
+- Globus_Auth_Client_ID
+- Globus_Auth_Client_Secret
+
+
+
+# Token introspection API
+
+Other SAGE resources (e.g. API server) can verify SAGE tokens via the introspection API resource. For this a native Django user `sage-api-server` has to be created:
+
+```bash
+kubectl exec -it  <pod> -- /bin/ash
+
+./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_user('sage-api-server', 'test@example.com', 'secret')"
+```
+
+Example token verification:
+```bash
+curl -X POST -H 'Accept: application/json; indent=4' -d 'token=<SAGE-USER-TOKEN>' -u sage-api-server:secret <sage-ui-hostname>:80/token_info/
+```
+
+Example response:
+```json
+{
+    "active": true,        # boolean value of whether or not the presented token is currently active.
+    "scope": "default",    # A JSON string containing a space-separated list of scopes associated with this token.
+    "client_id": "<user>",
+    "username": "<user>",
+    "exp": 1591632949      # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire. 
+}
+```
