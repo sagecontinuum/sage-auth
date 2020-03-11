@@ -59,7 +59,7 @@ curl -X POST -H 'Accept: application/json; indent=4' -d 'token=<SAGE-USER-TOKEN>
 ```
 
 Example response:
-```json
+```json5
 {
     "active": true,        # boolean value of whether or not the presented token is currently active.
     "scope": "default",    # A JSON string containing a space-separated list of scopes associated with this token.
