@@ -61,7 +61,7 @@ def token(request):
         response_data = {}
 
         if not request.user.is_authenticated:
-            return HttpResponse('Unauthorized', status=401)
+            return HttpResponse('Unauthorized', status=status.HTTP_401_UNAUTHORIZED)
 
         
         alphabet = string.ascii_uppercase + string.digits
@@ -105,19 +105,26 @@ class TokenInfo(APIView):
     
 
     authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):
-        # example: curl -H 'Accept: application/json; indent=4' -u admin:admin localhost:8000/token_info/
+        # example: curl -H 'Accept: application/json; indent=4' -u root:root localhost:8000/token_info/
         
-
         return Response("hello world")
 
     def post(self, request, format=None):
         
-        # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u admin:admin localhost:8000/token_info/
+        # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u root:root localhost:8000/token_info/
+        # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u sage-api-user:test localhost:8000/token_info/
+        
+        #return Response("post worked")
 
-
+        # TODO do this via token permission
+        if request.user.username != "sage-api-server":
+           content = {'error': 'StatusUnauthorized ({})'.format(request.user.username)}
+           return Response(content, status=status.HTTP_401_UNAUTHORIZED) 
+       
 
         data=request.data # is a QueryDict 
        
