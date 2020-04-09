@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 # for development, testing purposes only
 # login via Globus will not work as this requires SSL and a dmoina registered withy Globus
 
