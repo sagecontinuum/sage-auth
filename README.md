@@ -55,8 +55,10 @@ kubectl exec -it  <pod> -- /bin/ash
 
 Example token verification:
 ```bash
-curl -X POST -H 'Accept: application/json; indent=4' -d 'token=<SAGE-USER-TOKEN>' -u sage-api-server:secret <sage-ui-hostname>:80/token_info/
+curl -X POST -H 'Accept: application/json; indent=4' -H "Authorization: Basic c2FnZS1hcGktc2VydmVyOnRlc3Q=" -d 'token=<SAGE-USER-TOKEN>'  <sage-ui-hostname>:80/token_info/
 ```
+The basicAuth used here is the base64 encoding of `sage-api-server:test`.
+
 
 Example response:
 ```json5

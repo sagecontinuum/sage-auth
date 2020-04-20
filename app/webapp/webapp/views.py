@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
 
 
@@ -21,6 +21,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.utils.dateformat import format as dformat
+
 
 
 def home(request):
@@ -100,19 +101,22 @@ def token(request):
 
 # Token introspection API
 # see https://www.oauth.com/oauth2-servers/token-introspection-endpoint/
+
 class TokenInfo(APIView):
     
-    
 
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #authentication_classes = [SessionAuthentication, BasicAuthentication]
     #authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
+    #permission_classes = [ AllowAny ]
+
 
     def get(self, request, format=None):
         # example: curl -H 'Accept: application/json; indent=4' -u root:root localhost:8000/token_info/
         
         return Response("hello world")
 
+    
     def post(self, request, format=None):
         
         # curl -X POST -H 'Accept: application/json; indent=4' -d 'token=abc' -u root:root localhost:8000/token_info/
