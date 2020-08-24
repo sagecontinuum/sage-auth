@@ -19,7 +19,7 @@ from . import views
 
 from django.conf.urls import url # for native login
 from django.contrib.auth import views as auth_views # for native login
-
+from django.conf.urls import url
 
 
 urlpatterns = [
@@ -32,5 +32,6 @@ urlpatterns = [
     path('token/', views.token),
     url(r'^login/$', auth_views.LoginView.as_view(template_name="login.html"), name='login'), # for testing, Django-native login , https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
     url(r'^logout/$', auth_views.LogoutView, name='logout'), # for testing, Django-native logout
+    url('', include('django_prometheus.urls')),
 ]
 
