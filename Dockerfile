@@ -15,9 +15,9 @@ FROM python:3.8-alpine
 
 RUN apk update 
 
-RUN apk add mariadb-connector-c-dev  # needed to for mysqlclient to install mysql_config
-RUN apk add gcc musl-dev             # needed to for mysqlclient
-
+RUN apk add mariadb-connector-c-dev  # needed for mysqlclient to install mysql_config
+RUN apk add gcc musl-dev             # needed for mysqlclient
+RUN apk add libffi-dev               # needed for cryptography
 
 WORKDIR /usr/src/app/webapp
 

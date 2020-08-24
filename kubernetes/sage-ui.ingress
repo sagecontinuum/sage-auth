@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: sage-ui
+  namespace: sage
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: ""
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: sage-ui
+          servicePort: 80

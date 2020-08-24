@@ -3,3 +3,5 @@ social-auth-app-django
 python-jose
 mysqlclient
 djangorestframework
+prometheus_client
+django_prometheus
