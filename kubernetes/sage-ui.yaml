@@ -1,0 +1,115 @@
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: sage-ui
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: ""
+spec:
+  rules:
+  - host: localhost
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sage-ui
+            port:
+              number: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sage-ui
+spec:
+  ports:
+  - name: web
+    port: 80
+    targetPort: 80
+  selector:
+    k8s-app: sage-ui
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sage-ui
+type: Opaque
+stringData:
+    Globus_Auth_Client_ID: ""
+    Globus_Auth_Client_Secret: ""
+    MYSQL_PASSWORD: ""
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sage-ui-config
+data:
+  MYSQL_HOST: mysql
+  MYSQL_USER: sage-ui
+  MYSQL_DATABASE: SAGEDB  # warning: this is still hard-coded
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sage-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: sage-ui
+  template:
+    metadata:
+      labels:
+        k8s-app: sage-ui
+    spec:
+      containers:
+      - image: sagecontinuum/sage-ui:latest
+        name: sage-ui
+        command:
+          - ash
+          - -c
+          - while [ $(nc -zv ${MYSQL_HOST} 3306; echo $?) != 0 ] ;
+            do echo "wait..." ; sleep 2; done ; python manage.py migrate ;
+           python manage.py runserver 0.0.0.0:80
+        env:
+        - name: DEBUG_VALUE
+          value: "TRUE"
+        - name: Globus_Auth_Client_ID
+          valueFrom:
+            secretKeyRef:
+                name: sage-ui
+                key: Globus_Auth_Client_ID
+        - name: Globus_Auth_Client_Secret
+          valueFrom:
+            secretKeyRef:
+                name: sage-ui
+                key: Globus_Auth_Client_Secret
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: sage-ui-config
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sage-ui
+              key: MYSQL_PASSWORD
+        #- name: MYSQL_ROOT_PASSWORD
+        #  valueFrom:
+        #    secretKeyRef:
+        #      name: sage-ui-mysql-env
+        #      key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: sage-ui-config
+              key: MYSQL_DATABASE
+        - name: MYSQL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: sage-ui-config
+              key: MYSQL_HOST
+        ports:
+        - containerPort: 80
+      restartPolicy: Always
