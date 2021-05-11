@@ -10,14 +10,15 @@
 # docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" sagecontinuum/sage-ui
 
 
-FROM python:3.8-alpine 
+#FROM python:3.8-alpine
+FROM python:3.10-rc-alpine
 
-
-RUN apk update 
+RUN apk update
 
 RUN apk add mariadb-connector-c-dev  # needed for mysqlclient to install mysql_config
 RUN apk add gcc musl-dev             # needed for mysqlclient
 RUN apk add libffi-dev               # needed for cryptography
+RUN pip install --upgrade pip
 
 WORKDIR /usr/src/app/webapp
 
