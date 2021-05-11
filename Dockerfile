@@ -11,10 +11,12 @@
 
 
 #FROM python:3.8-alpine
-FROM python:3.10-rc-alpine
+#FROM python:3.10-rc-alpine
+FROM alpine:3.13
 
 RUN apk update
 
+RUN apk add py3-pip python3-dev
 RUN apk add mariadb-connector-c-dev  # needed for mysqlclient to install mysql_config
 RUN apk add gcc musl-dev             # needed for mysqlclient
 RUN apk add libffi-dev rust cargo    # needed for cryptography
