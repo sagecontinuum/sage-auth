@@ -11,9 +11,9 @@ services:
       - SAGE-UI-DB:/var/lib/mysql
 
   sage-ui:
-    image: sagecontinuum/sage-ui
+    image: waggle/sage-ui
     build: .
-    entrypoint: 
+    entrypoint:
           - /testing-entrypoint.sh
     volumes:
         - ${PWD}/testing-entrypoint.sh:/testing-entrypoint.sh:ro
@@ -23,7 +23,7 @@ services:
     depends_on:
       - db
     env_file: mysql.env
-    environment: 
+    environment:
       - Globus_Auth_Client_ID="${Globus_Auth_Client_ID}"
       - Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}"
       - ADD_USER="test,test"

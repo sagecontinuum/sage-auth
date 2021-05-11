@@ -1,13 +1,13 @@
 
 
-# docker build -t sagecontinuum/sage-ui .
+# docker build -t waggle/sage-ui .
 
 #ash
-# docker run -ti --rm --name sage-ui -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash sagecontinuum/sage-ui
+# docker run -ti --rm --name sage-ui -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash waggle/sage-ui
 
 
 #webserver
-# docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" sagecontinuum/sage-ui
+# docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" waggle/sage-ui
 
 
 #FROM python:3.8-alpine
@@ -17,7 +17,7 @@ RUN apk update
 
 RUN apk add mariadb-connector-c-dev  # needed for mysqlclient to install mysql_config
 RUN apk add gcc musl-dev             # needed for mysqlclient
-RUN apk add libffi-dev               # needed for cryptography
+RUN apk add libffi-dev rust cargo    # needed for cryptography
 RUN pip install --upgrade pip
 
 WORKDIR /usr/src/app/webapp

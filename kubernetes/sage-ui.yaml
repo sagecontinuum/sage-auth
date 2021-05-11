@@ -64,7 +64,7 @@ spec:
         k8s-app: sage-ui
     spec:
       containers:
-      - image: sagecontinuum/sage-ui:latest
+      - image: waggle/sage-ui:latest
         name: sage-ui
         command:
           - ash

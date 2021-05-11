@@ -17,15 +17,15 @@ spec:
     spec:
       initContainers:
       - name: sage-ui-init
-        image: sagecontinuum/sage-ui:latest
+        image: waggle/sage-ui:latest
         command:
           - ash
-          - -c  
+          - -c
           - while [ $(nc -zv db 3306; echo $?) != 0 ] ; do echo "wait..." ; sleep 2; done
       containers:
-      - image: sagecontinuum/sage-ui:latest
-        name: sage-ui 
-        command: 
+      - image: waggle/sage-ui:latest
+        name: sage-ui
+        command:
           - /testing-entrypoint.sh
         env:
         - name: DEBUG_VALUE
