@@ -12,11 +12,6 @@ In production the default login is authentication delegated to Globus Auth, the 
 
 
 
-## minikube
-
-For instructions see [minikube](minikube).
-
-
 ## docker-compose
 
 Starts a local instance of the SAGE Auth server on [http://localhost:8000/](http://localhost:8000/) and creates a test user that can be used to log in.
