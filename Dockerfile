@@ -17,6 +17,7 @@ FROM alpine:3.13
 RUN apk update
 
 RUN apk add python3 py3-pip python3-dev
+RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN apk add mariadb-connector-c-dev  # needed for mysqlclient to install mysql_config
 RUN apk add gcc musl-dev             # needed for mysqlclient
 RUN apk add libffi-dev rust cargo    # needed for cryptography
