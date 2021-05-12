@@ -1,6 +1,6 @@
-# SAGE UI
+# SAGE Auth
 
-Draft of a website for SAGE to let users authenticate using their institutional identity provider and create tokens for access to other SAGE resources.
+Auth server for SAGE to let users authenticate using their institutional identity provider and create tokens for access to other SAGE resources.
 
 
 # Test environments 
@@ -8,7 +8,7 @@ Draft of a website for SAGE to let users authenticate using their institutional 
 
 Both test environments described below are not to be used in production, they are only for development/testing purposes!
 
-In production the default login is authentication delegated to Globus Auth, the login will not work in a local deployment without SSL certificate and client registration with the Globus OAuth server. Instead, the test deployments via the docker-compose or minikube create a native Django test user (see [testing-entrypoint.sh](testing-entrypoint.sh)) and the developer can login via [http://localhost:8000/login](http://localhost:8000/login) as `test` with password `test`.  
+In production the default login is authentication delegated to Globus Auth, the login will not work in a local deployment without SSL certificate and client registration with the Globus OAuth server. Instead, the test deployments via the docker-compose create a native Django test user (see [testing-entrypoint.sh](testing-entrypoint.sh)) and the developer can login via [http://localhost:8000/login](http://localhost:8000/login) as `test` with password `test`.  
 
 
 
@@ -19,7 +19,7 @@ For instructions see [minikube](minikube).
 
 ## docker-compose
 
-Starts a local instance of the SAGE UI on [http://localhost:8000/](http://localhost:8000/) and creates a test user that can be used to log in.
+Starts a local instance of the SAGE Auth server on [http://localhost:8000/](http://localhost:8000/) and creates a test user that can be used to log in.
 
 ```bash
 docker-compose up
@@ -34,10 +34,10 @@ docker-compose up
 - Add new app.
 - Add scopes: profile, urn:globus:auth:scope:auth.globus.org:view_identity_set
 - Specify redirect URL: https://<your-domain>/complete/globus/
-    - This requires SAGE UI to have an SSL certificate!
+    - This requires SAGE Auth to have an TLS certificate!
 - Generate new client secret
 
-SAGE UI has to be started with these two arguments:
+SAGE Auth server has to be started with these two arguments:
 - Globus_Auth_Client_ID
 - Globus_Auth_Client_Secret
 
@@ -55,7 +55,7 @@ kubectl exec -it  <pod> -- /bin/ash
 
 Example token verification:
 ```bash
-curl -X POST -H 'Accept: application/json; indent=4' -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Basic c2FnZS1hcGktc2VydmVyOnRlc3Q=" -d 'token=<SAGE-USER-TOKEN>'  <sage-ui-hostname>:80/token_info/
+curl -X POST -H 'Accept: application/json; indent=4' -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Basic c2FnZS1hcGktc2VydmVyOnRlc3Q=" -d 'token=<SAGE-USER-TOKEN>'  <sage-auth-hostname>:80/token_info/
 ```
 The basicAuth used here is the base64 encoding of `sage-api-server:test`.
 

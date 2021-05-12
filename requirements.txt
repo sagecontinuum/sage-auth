@@ -6,3 +6,4 @@ mysqlclient
 djangorestframework
 prometheus_client
 django_prometheus
+gunicorn

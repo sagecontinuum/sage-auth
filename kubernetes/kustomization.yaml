@@ -3,14 +3,9 @@ kind: Kustomization
 
 resources:
 
-  #- sage-ui-db.deployment
-  #- sage-ui-db.pvc
-  #- sage-ui-db.secret
-  #- sage-ui-db.service
+  #- sage-auth-db.deployment
+  #- sage-auth-db.pvc
+  #- sage-auth-db.secret
+  #- sage-auth-db.service
 
-  #- sage-ui.deployment
-  #- sage-ui.ingress
-  #- sage-ui.secret
-  #- sage-ui.service
-
-  - sage-ui.yaml
+  - sage-auth.yaml

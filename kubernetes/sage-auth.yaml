@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sage-ui
+  name: sage-auth
   annotations:
     traefik.ingress.kubernetes.io/router.tls: ""
 spec:
@@ -14,26 +14,26 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: sage-ui
+            name: sage-auth
             port:
               number: 80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: sage-ui
+  name: sage-auth
 spec:
   ports:
   - name: web
     port: 80
     targetPort: 80
   selector:
-    k8s-app: sage-ui
+    k8s-app: sage-auth
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: sage-ui
+  name: sage-auth
 type: Opaque
 stringData:
     Globus_Auth_Client_ID: ""
@@ -43,29 +43,29 @@ stringData:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: sage-ui-config
+  name: sage-auth-config
 data:
   MYSQL_HOST: mysql
-  MYSQL_USER: sage-ui
+  MYSQL_USER: sage-auth
   MYSQL_DATABASE: SAGEDB  # warning: this is still hard-coded
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sage-ui
+  name: sage-auth
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: sage-ui
+      k8s-app: sage-auth
   template:
     metadata:
       labels:
-        k8s-app: sage-ui
+        k8s-app: sage-auth
     spec:
       containers:
-      - image: waggle/sage-ui:latest
-        name: sage-ui
+      - image: waggle/sage-auth:latest
+        name: sage-auth
         command:
           - ash
           - -c
@@ -78,37 +78,37 @@ spec:
         - name: Globus_Auth_Client_ID
           valueFrom:
             secretKeyRef:
-                name: sage-ui
+                name: sage-auth
                 key: Globus_Auth_Client_ID
         - name: Globus_Auth_Client_Secret
           valueFrom:
             secretKeyRef:
-                name: sage-ui
+                name: sage-auth
                 key: Globus_Auth_Client_Secret
         - name: MYSQL_USER
           valueFrom:
             configMapKeyRef:
-              name: sage-ui-config
+              name: sage-auth-config
               key: MYSQL_USER
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: sage-ui
+              name: sage-auth
               key: MYSQL_PASSWORD
         #- name: MYSQL_ROOT_PASSWORD
         #  valueFrom:
         #    secretKeyRef:
-        #      name: sage-ui-mysql-env
+        #      name: sage-auth-mysql-env
         #      key: MYSQL_ROOT_PASSWORD
         - name: MYSQL_DATABASE
           valueFrom:
             configMapKeyRef:
-              name: sage-ui-config
+              name: sage-auth-config
               key: MYSQL_DATABASE
         - name: MYSQL_HOST
           valueFrom:
             configMapKeyRef:
-              name: sage-ui-config
+              name: sage-auth-config
               key: MYSQL_HOST
         ports:
         - containerPort: 80

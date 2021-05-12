@@ -8,10 +8,10 @@ services:
     image: mysql:8
     env_file: mysql.env
     volumes:
-      - SAGE-UI-DB:/var/lib/mysql
+      - SAGE-AUTH-DB:/var/lib/mysql
 
-  sage-ui:
-    image: waggle/sage-ui
+  sage-auth:
+    image: waggle/sage-auth
     build: .
     entrypoint:
           - /testing-entrypoint.sh
@@ -29,4 +29,4 @@ services:
       - ADD_USER="test,test"
       - DEBUG_VALUE=TRUE
 volumes:
-  SAGE-UI-DB:
+  SAGE-AUTH-DB:

@@ -1,13 +1,13 @@
 
 
-# docker build -t waggle/sage-ui .
+# docker build -t waggle/sage-auth .
 
 #ash
-# docker run -ti --rm --name sage-ui -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash waggle/sage-ui
+# docker run -ti --rm --name sage-auth -v `pwd`/app/:/usr/src/app --entrypoint /bin/ash waggle/sage-auth
 
 
 #webserver
-# docker run -ti --rm --name sage-ui -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" waggle/sage-ui
+# docker run -ti --rm --name sage-auth -p 8000:80 --env Globus_Auth_Client_ID="${Globus_Auth_Client_ID}" --env Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}" waggle/sage-auth
 
 
 #FROM python:3.8-alpine
