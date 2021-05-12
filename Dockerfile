@@ -34,5 +34,8 @@ COPY app /usr/src/app/
 COPY testing-entrypoint.sh /testing-entrypoint.sh
 RUN chmod 755 /testing-entrypoint.sh
 
+# PATCH globus.py, insert code at line 12
+RUN sed -i "12i\ \ \ \ JWT_ALGORITHMS = ['RS512']" /usr/lib/python*/site-packages/social_core/backends/globus.py
+
 EXPOSE 80
 CMD ["python", "manage.py", "runserver", "0.0.0.0:80"]
