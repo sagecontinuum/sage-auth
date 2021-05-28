@@ -1,0 +1,26 @@
+{% load static %}
+<p>
+  {% if user and not user.is_anonymous %}
+    Hello {{ user.get_full_name|default:user.username }}!<br/>
+    &nbsp; Username: {{ user.username }}<br/>
+    &nbsp; Email: {{ user.email }}<br/>
+    &nbsp; First name: {{ user.first_name }}<br/>
+    &nbsp; Last name: {{ user.last_name }}<br/>
+    &nbsp; Date joined: {{ user.date_joined }}<br/>
+    &nbsp; Last login: {{ user.last_login }}<br/>
+    &nbsp; UUID: {{ uuid }}<br>
+
+    <!-- &nbsp; Access token: {{ access_token }}<br/>
+    &nbsp; Refresh token: {{ refresh_token }}<br/> -->
+    <br/>
+    <a class="logout" href="{% url 'logout' %}?next={{ request.path }}">Sign Out</a>
+  {% else %}
+    <a class="btn login-btn" href="{% url 'social:begin' 'globus' %}?next={{ request.path }}">
+      <img src="{% static 'globus-logo.png' %}" height="30" /> Sign In with Globus
+    </a>
+  {% endif %}
+</p>
+<p>
+  <div id="token_box"></div>
+  <div id="expires_box"></div>
+</p>

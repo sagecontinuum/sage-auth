@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'social_django',
     'webapp',
     'rest_framework',
-    'django_prometheus',
+    'django_prometheus'
 ]
 
 MIDDLEWARE = [
@@ -110,7 +110,7 @@ if USE_SQLITE3:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-else: 
+else:
     MYSQL_HOST = os.environ.get('MYSQL_HOST')
     if MYSQL_HOST is None:
         sys.exit("MYSQL_HOST is not defined")

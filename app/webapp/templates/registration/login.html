@@ -1,12 +1,23 @@
-{% extends 'home.html' %}
+{% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Sage | Test Sign In{% endblock %}
 
 {% block content %}
-  <h2>Login</h2>
+
+  <h1>Sign Globus Sign In</h1>
+  {% include 'partials/globus_signin.html' %}
+
+  <input type="button" onclick="getToken()" value="Get Sage Token">
+
+  <h2>Test User Sign In</h2>
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Login</button>
   </form>
+
+  <input type="button" onclick="getToken()" value="Get Sage Token">
 {% endblock %}
+
+
+
