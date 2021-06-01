@@ -130,7 +130,7 @@ def token(request):
         try:
             user_uuid = request.user.social_auth.get(provider='globus').uid
         except:
-            # native Django user, this is mostly for testinf purposes
+            # native Django user, this is mostly for testing purposes
             username = request.user.username
             user_uuid = username
 
@@ -211,7 +211,7 @@ class TokenInfo(APIView):
 
         unix_expires = int(dformat(expires, 'U'))
 
-        content =      {
+        content = {
             "active": True, # Required. This is a boolean value of whether or not the presented token is currently active. The value should be “true” if the token has been issued by this authorization server, has not been revoked by the user, and has not expired.
             "scope": scope, # A JSON string containing a space-separated list of scopes associated with this token.
             "client_id": user, # The client identifier for the OAuth 2.0 client that the token was issued to.

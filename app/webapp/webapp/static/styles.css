@@ -100,13 +100,12 @@ main .container {
 
 .btn {
   padding: 1em;
-  background-color: #fff;
-  color: #2e6fad;
+  color: #666;
   text-decoration: none;
 }
 
 .btn:hover {
-  background-color: #f2f2f2;
+  opacity: .9;
   text-decoration: none;
 }
 
@@ -114,8 +113,15 @@ main .container {
   font-size: 1.2em;
   display: flex;
   align-items: center;
+  background-color: #3460a1;
+  color: #fff;
 }
 
 .login-btn img {
   padding-right: .5em;
+}
+
+.login-btn:focus  {
+  outline: 1px dashed black;
+  opacity: .9;
 }

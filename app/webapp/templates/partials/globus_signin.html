@@ -16,7 +16,7 @@
     <a class="logout" href="{% url 'logout' %}?next={{ request.path }}">Sign Out</a>
   {% else %}
     <a class="btn login-btn" href="{% url 'social:begin' 'globus' %}?next={{ request.path }}">
-      <img src="{% static 'globus-logo.png' %}" height="30" /> Sign In with Globus
+      <img src="{% static 'globus-logo.svg' %}" height="30" /> Sign In with Globus
     </a>
   {% endif %}
 </p>
