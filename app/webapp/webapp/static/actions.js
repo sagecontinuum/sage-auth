@@ -27,7 +27,7 @@ $('a.logout').click(function(event) {
     event.preventDefault();
     var host = window.location.hostname;
     var domain = host.includes('.') ?  host.slice(host.indexOf('.')) : host;
-    document.cookie = 'username=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' + domain;
+    document.cookie = 'sage_username=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' + domain;
     document.cookie = 'sage_uuid=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' + domain;
     document.cookie = 'sage_token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' + domain;
     document.cookie = 'sage_token_exp=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=' + domain;
