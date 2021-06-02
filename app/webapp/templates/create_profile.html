@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Finish Setting up Your Sage Account</h1>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+
+        {% if field.help_text %}
+          <br/>
+
+          <p style="font-weight: bold;">{{ field.help_text }}</p>
+        {% endif %}
+
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+    {% endfor %}
+    <button type="submit">Ok, Register</button>
+  </form>
+{% endblock %}

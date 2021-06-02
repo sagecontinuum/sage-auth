@@ -1,8 +1,8 @@
 {% load static %}
 <p>
   {% if user and not user.is_anonymous %}
-    Hello {{ user.get_full_name|default:user.username }}!<br/>
-    &nbsp; Username: {{ user.username }}<br/>
+    Hello {{ user.get_full_name|default:user.profile.sage_username }}!<br/>
+    &nbsp; Username: {{ user.profile.sage_username }}<br/>
     &nbsp; Email: {{ user.email }}<br/>
     &nbsp; First name: {{ user.first_name }}<br/>
     &nbsp; Last name: {{ user.last_name }}<br/>

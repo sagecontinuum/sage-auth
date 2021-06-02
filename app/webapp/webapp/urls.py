@@ -28,6 +28,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('', include('django.contrib.auth.urls')), #  enable the ‘Logout’ link
     path('', include('social_django.urls', namespace='social')), # ‘Login with Globus’ link and other URLs required by OpenID Connect protocol.
+    path('create-profile/', views.create_profile),
     path('portal-logout/', views.portal_logout),
     path('token/', views.token),
     url('', include('django_prometheus.urls')),

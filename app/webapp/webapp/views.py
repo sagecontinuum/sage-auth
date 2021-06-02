@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import json
-from webapp.models import Token
+from webapp.models import Token, Profile
+from webapp.forms import CreateProfileForm
+
 import secrets
 
 from django.utils import timezone
@@ -23,7 +25,6 @@ from django.shortcuts import render, redirect
 from django.utils.dateformat import format as dformat
 
 
-from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in
 from django.dispatch import receiver
 from prometheus_client import Counter, start_http_server
@@ -66,7 +67,7 @@ def home(request, callback = ''):
 
     # get sage ui redirect if provided
     path = request.GET.get('callback')
-    has_sage_token = request.COOKIES.get('sage_token')
+    # has_sage_token = request.COOKIES.get('sage_token')
 
     response = render(
         request,
@@ -79,7 +80,7 @@ def home(request, callback = ''):
         }
     )
 
-    # we'll store cookie on domain; should this be part of site config
+    # grab domain for cookie; should this be part of site config?
     domain = util_get_domain(request)
 
     # get redirect from previous time callback was provided
@@ -220,6 +221,26 @@ class TokenInfo(APIView):
         }
 
         return Response(content)
+
+
+
+def create_profile(request):
+    if request.method == 'POST':
+        form = CreateProfileForm(request.POST , instance=request.user)
+        form.actual_user = request.user
+        if form.is_valid():
+            form.save()
+
+            # if we have a redirect, go ahead and do it
+            path = request.COOKIES.get('portal_redirect')
+            response = redirect(path) if path else redirect("/")
+            response.delete_cookie('portal_redirect')
+            return response
+    else:
+        form = CreateProfileForm()
+
+    return render(request, 'create_profile.html', {'form': form})
+
 
 
 
