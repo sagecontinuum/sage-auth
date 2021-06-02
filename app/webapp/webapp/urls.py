@@ -31,6 +31,8 @@ urlpatterns = [
     path('create-profile/', views.create_profile),
     path('portal-logout/', views.portal_logout),
     path('token/', views.token),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name="login.html"), name='login'), # for testing, Django-native login , https://simpleisbetterthancomplex.com/tutorial/2016/06/27/how-to-use-djangos-built-in-login-system.html
+    url(r'^logout/$', auth_views.LogoutView, name='logout'), # for testing, Django-native logout
     url('', include('django_prometheus.urls')),
 ]
 

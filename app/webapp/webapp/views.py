@@ -45,7 +45,6 @@ def update_user_login(sender, **kwargs): # Receiver function
 
 
 def home(request, callback = ''):
-    test_signin = False
     uuid = None
     access_token = None
     refresh_token = None
@@ -54,7 +53,6 @@ def home(request, callback = ''):
         try:
             globus_user = request.user.social_auth.get(provider='globus')
         except:
-            test_signin = True
             uuid = 'some uuid'
             access_token = 'access_token'
             refresh_token = 'refresh_token'
@@ -90,6 +88,21 @@ def home(request, callback = ''):
     if path and not portal_redirect:
         response.set_cookie('portal_redirect', path)
 
+    if not request.user.is_anonymous:
+        sage_username = request.user.profile.sage_username
+
+    # if we have a token, but no username, redirect to "create_profile" viewa
+    if access_token and not sage_username:
+        response = redirect('/create-profile')
+
+        token_object = util_create_sage_token(uuid)
+        expires = token_object.expires
+        response.set_cookie('sage_uuid', uuid, domain=domain)
+        response.set_cookie('sage_token', token_object.tokenValue, domain=domain)
+        response.set_cookie('sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain=domain)
+
+        return response
+
     # if we already have a redirect cookie and are logged in,
     # redirect back to original location
     if portal_redirect and access_token:
@@ -97,6 +110,7 @@ def home(request, callback = ''):
 
         token_object = util_create_sage_token(uuid)
         expires = token_object.expires
+        response.set_cookie('sage_username', sage_username, domain=domain)
         response.set_cookie('sage_uuid', uuid, domain=domain)
         response.set_cookie('sage_token', token_object.tokenValue, domain=domain)
         response.set_cookie('sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain=domain)
@@ -231,10 +245,17 @@ def create_profile(request):
         if form.is_valid():
             form.save()
 
-            # if we have a redirect, go ahead and do it
+            # if we have a redirect, prepare the redirect
             path = request.COOKIES.get('portal_redirect')
             response = redirect(path) if path else redirect("/")
-            response.delete_cookie('portal_redirect')
+
+            # store username cookie
+            sage_username = form.cleaned_data['sage_username']
+            response.set_cookie('sage_username', sage_username, domain=util_get_domain(request))
+
+            if (path):
+                response.delete_cookie('portal_redirect')
+
             return response
     else:
         form = CreateProfileForm()
@@ -253,6 +274,7 @@ def portal_logout(request, callback = ''):
     response = redirect(path) if path else redirect("/")
 
     domain = util_get_domain(request)
+    response.delete_cookie('sage_username', domain=domain)
     response.delete_cookie('sage_uuid', domain=domain)
     response.delete_cookie('sage_token', domain=domain)
     response.delete_cookie('sage_token_exp', domain=domain)
