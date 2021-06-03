@@ -38,6 +38,12 @@ def util_get_domain(request):
     return domain
 
 
+# use utility function as we don't want to affect global settings
+def util_set_cookie(response, key, value, domain):
+    response.set_cookie(key, value, domain=domain, secure=True, samesite='Strict')
+    return response
+
+
 @receiver(user_logged_in)
 def update_user_login(sender, **kwargs): # Receiver function
     kwargs.pop('user', None)
@@ -97,9 +103,9 @@ def home(request, callback = ''):
 
         token_object = util_create_sage_token(uuid)
         expires = token_object.expires
-        response.set_cookie('sage_uuid', uuid, domain=domain)
-        response.set_cookie('sage_token', token_object.tokenValue, domain=domain)
-        response.set_cookie('sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain=domain)
+        response = util_set_cookie(response, 'sage_uuid', uuid, domain)
+        response = util_set_cookie(response, 'sage_token', token_object.tokenValue, domain)
+        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain)
 
         return response
 
@@ -110,10 +116,10 @@ def home(request, callback = ''):
 
         token_object = util_create_sage_token(uuid)
         expires = token_object.expires
-        response.set_cookie('sage_username', sage_username, domain=domain)
-        response.set_cookie('sage_uuid', uuid, domain=domain)
-        response.set_cookie('sage_token', token_object.tokenValue, domain=domain)
-        response.set_cookie('sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain=domain)
+        response = util_set_cookie(response, 'sage_username', sage_username, domain)
+        response = util_set_cookie(response, 'sage_uuid', uuid, domain)
+        response = util_set_cookie(response, 'sage_token', token_object.tokenValue, domain)
+        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain)
         response.delete_cookie('portal_redirect')
 
         return response
@@ -251,7 +257,7 @@ def create_profile(request):
 
             # store username cookie
             sage_username = form.cleaned_data['sage_username']
-            response.set_cookie('sage_username', sage_username, domain=util_get_domain(request))
+            response = util_set_cookie(response, 'sage_username', sage_username, domain)
 
             if (path):
                 response.delete_cookie('portal_redirect')
