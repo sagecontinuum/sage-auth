@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from webapp.models import Profile
+import re
 
 class CreateProfileForm(forms.ModelForm):
     sage_username = forms.CharField(
@@ -20,6 +21,10 @@ class CreateProfileForm(forms.ModelForm):
 
         if Profile.objects.filter(sage_username=sage_username).count():
             raise forms.ValidationError('This username has been taken. Please try a different username.')
+
+        p = re.compile(f'[a-z0-9]+', re.ASCII)
+        if not p.fullmatch(sage_username):
+            raise forms.ValidationError('Usernames can only contain lowercase letters and numbers.')
 
         return sage_username
 
