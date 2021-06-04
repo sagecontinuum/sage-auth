@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 from django.http import HttpResponse
 import json
@@ -32,15 +33,11 @@ from prometheus_client import Counter, start_http_server
 login_counter = Counter("login_counter", "This metric counts the total number of logins")
 
 
-def util_get_domain(request):
-    host = request.get_host()
-    domain = host[host.find('.'):]
-    return domain
 
-
-# use utility function as we don't want to affect global settings
-def util_set_cookie(response, key, value, domain):
-    response.set_cookie(key, value, domain=domain, secure=True, samesite='Strict')
+# set all sage specific cookies here with utility function
+# since we don't want to affect global settings
+def util_set_cookie(response, key, value):
+    response.set_cookie(key, value, domain=settings.SAGE_COOKIE_DOMAIN, secure=True, samesite='Strict')
     return response
 
 
@@ -84,8 +81,7 @@ def home(request, callback = ''):
         }
     )
 
-    # grab domain for cookie; should this be part of site config?
-    domain = util_get_domain(request)
+
 
     # get redirect from previous time callback was provided
     portal_redirect = request.COOKIES.get('portal_redirect')
@@ -103,9 +99,9 @@ def home(request, callback = ''):
 
         token_object = util_create_sage_token(uuid)
         expires = token_object.expires
-        response = util_set_cookie(response, 'sage_uuid', uuid, domain)
-        response = util_set_cookie(response, 'sage_token', token_object.tokenValue, domain)
-        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain)
+        response = util_set_cookie(response, 'sage_uuid', uuid)
+        response = util_set_cookie(response, 'sage_token', token_object.tokenValue)
+        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year))
 
         return response
 
@@ -116,16 +112,17 @@ def home(request, callback = ''):
 
         token_object = util_create_sage_token(uuid)
         expires = token_object.expires
-        response = util_set_cookie(response, 'sage_username', sage_username, domain)
-        response = util_set_cookie(response, 'sage_uuid', uuid, domain)
-        response = util_set_cookie(response, 'sage_token', token_object.tokenValue, domain)
-        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year), domain)
+        response = util_set_cookie(response, 'sage_username', sage_username)
+        response = util_set_cookie(response, 'sage_uuid', uuid)
+        response = util_set_cookie(response, 'sage_token', token_object.tokenValue)
+        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year))
         response.delete_cookie('portal_redirect')
 
         return response
 
 
     return response
+
 
 
 # todo(nc): mod expiry time for tokens generated via portal
@@ -257,7 +254,7 @@ def create_profile(request):
 
             # store username cookie
             sage_username = form.cleaned_data['sage_username']
-            response = util_set_cookie(response, 'sage_username', sage_username, domain)
+            response = util_set_cookie(response, 'sage_username', sage_username)
 
             if (path):
                 response.delete_cookie('portal_redirect')
@@ -279,11 +276,10 @@ def portal_logout(request, callback = ''):
     path = request.GET.get('callback')
     response = redirect(path) if path else redirect("/")
 
-    domain = util_get_domain(request)
-    response.delete_cookie('sage_username', domain=domain)
-    response.delete_cookie('sage_uuid', domain=domain)
-    response.delete_cookie('sage_token', domain=domain)
-    response.delete_cookie('sage_token_exp', domain=domain)
+    response.delete_cookie('sage_username', domain=settings.SAGE_COOKIE_DOMAIN)
+    response.delete_cookie('sage_uuid', domain=settings.SAGE_COOKIE_DOMAIN)
+    response.delete_cookie('sage_token', domain=settings.SAGE_COOKIE_DOMAIN)
+    response.delete_cookie('sage_token_exp', domain=settings.SAGE_COOKIE_DOMAIN)
     response.delete_cookie('portal_redirect')
 
     return response

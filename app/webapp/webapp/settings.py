@@ -88,7 +88,7 @@ SOCIAL_AUTH_GLOBUS_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
 }
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
+SAGE_COOKIE_DOMAIN = os.environ.get('SAGE_COOKIE_DOMAIN')
 
 WSGI_APPLICATION = 'webapp.wsgi.application'
 
