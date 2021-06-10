@@ -5,7 +5,7 @@
 {% block content %}
 
   <h1>Sign Globus Sign In</h1>
-  {% include 'partials/globus_signin.html' %}
+  {% include 'partials/globus_signin.html' with uuid=uuid %}
 
   <input type="button" onclick="getToken()" value="Get Sage Token">
 

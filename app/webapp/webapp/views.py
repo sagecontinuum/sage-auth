@@ -68,7 +68,6 @@ def home(request, callback = ''):
 
     # get sage ui redirect if provided
     path = request.GET.get('callback')
-    # has_sage_token = request.COOKIES.get('sage_token')
 
     response = render(
         request,
@@ -80,8 +79,6 @@ def home(request, callback = ''):
             'refresh_token': refresh_token
         }
     )
-
-
 
     # get redirect from previous time callback was provided
     portal_redirect = request.COOKIES.get('portal_redirect')
