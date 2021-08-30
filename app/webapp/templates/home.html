@@ -1,73 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <title>SAGE</title>
-    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
-</head>
-<body>
-    <div>
-    <h1>SAGE website</h1>
-    <p>
-         <br/>
-    {% if user and not user.is_anonymous %}
-        Hello {{ user.get_full_name|default:user.username }}!<br/>
-        &nbsp; Username: {{ user.username }}<br/>
-        &nbsp; Email: {{ user.email }}<br/>
-        &nbsp; First name: {{ user.first_name }}<br/>
-        &nbsp; Last name: {{ user.last_name }}<br/>
-        &nbsp; Date joined: {{ user.date_joined }}<br/>
-        &nbsp; Last login: {{ user.last_login }}<br/>
-        &nbsp; UUID: {{ uuid }}<br>
-        <!-- &nbsp; Access token: {{ access_token }}<br/>
-        &nbsp; Refresh token: {{ refresh_token }}<br/> -->
-        <br/>
-        <a href="{% url 'logout' %}?next={{ request.path }}">Logout</a>
-    {% else %}
-        <a href="{% url 'social:begin' 'globus' %}?next={{ request.path }}">Login with Globus</a>
-    {% endif %}
-    </p>
-    <p>
-        
-        <div id="token_box"></div>
-        <div id="expires_box"></div>
-        <input type='button' onclick='GetToken()' value='get token'>
+{% extends 'base.html' %}
 
-        <script>
-            //function GetToken(){
-                var GetToken = function() {
-  $.ajax({
-    type: 'GET',
-    contentType: 'application/json',
-    dataType: 'json',
-    url: '/token',
-    // The data sent to the Django view in JSON format
-    data: JSON.stringify({
-      formField: $('#body').val()
-    }),
-    error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("Error: "+ errorThrown); 
-    },   
-    success: function (data) {
-        
-        console.log(data);
-        console.log(data.token);
-        $('#token_box').html("Token: " + data.token)
-        $('#expires_box').html("Expires: " + data.expires)
-    }
+{% block title %}Sage | Sign In{% endblock %}
 
-  });
-}
-
-
-            </script>
-
-
-
-        
-        </p>
-    </div>
-    {% block content %}
-      {% endblock %}
-</body>
-</html>
+{% block content %}
+    <h1>Sage Sign In</h1>
+    {% include 'partials/globus_signin.html' with uuid=uuid %}
+{% endblock %}

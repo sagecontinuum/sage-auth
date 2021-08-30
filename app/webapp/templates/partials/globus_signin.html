@@ -1,0 +1,30 @@
+{% load static %}
+<p>
+  {% if user and not user.is_anonymous %}
+    You are signed in as <i>{{ user.profile.sage_username }}</i>.<br/>
+
+    <!--{{ user.get_full_name|default:user.profile.sage_username }}!<br/>-->
+    <table  cellspacing="5">
+      <tbody>
+        <tr><td><b>Username</b>:<td>{{ user.profile.sage_username }}
+        <tr><td><b>Email</b>:<td>{{ user.email }}
+        <tr><td><b>First name</b>:<td>{{ user.first_name }}
+        <tr><td><b>Last name</b>:<td>{{ user.last_name }}
+        <tr><td><b>Date joined</b>:<td>{{ user.date_joined }}
+        <tr><td><b>Last login</b>:<td>{{ user.last_login }}
+        <tr><td><b>UUID</b>:<td>{{ uuid }}
+      </tbody>
+    </table>
+
+    <br/>
+    <a class="logout" href="{% url 'logout' %}?next={{ request.path }}">Sign Out</a>
+  {% else %}
+    <a class="btn login-btn" href="{% url 'social:begin' 'globus' %}?next={{ request.path }}">
+      <img src="{% static 'globus-logo.svg' %}" height="30" /> Sign In with Globus
+    </a>
+  {% endif %}
+</p>
+<p>
+  <div id="token_box"></div>
+  <div id="expires_box"></div>
+</p>

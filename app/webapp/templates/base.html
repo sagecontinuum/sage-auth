@@ -1,0 +1,14 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    {% include 'head.html' %}
+    <body>
+        {% include 'navbar.html' %}
+        <main>
+            <div class="container">
+              {% block content %}
+              {% endblock %}
+            </div>
+        </main>
+    </body>
+</html>

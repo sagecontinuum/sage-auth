@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'social_django',
     'webapp',
     'rest_framework',
-    'django_prometheus',
+    'django_prometheus'
 ]
 
 MIDDLEWARE = [
@@ -88,7 +88,7 @@ SOCIAL_AUTH_GLOBUS_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
 }
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-
+SAGE_COOKIE_DOMAIN = os.environ.get('SAGE_COOKIE_DOMAIN')
 
 WSGI_APPLICATION = 'webapp.wsgi.application'
 
@@ -110,7 +110,7 @@ if USE_SQLITE3:
             'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         }
     }
-else: 
+else:
     MYSQL_HOST = os.environ.get('MYSQL_HOST')
     if MYSQL_HOST is None:
         sys.exit("MYSQL_HOST is not defined")

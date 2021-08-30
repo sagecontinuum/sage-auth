@@ -48,6 +48,7 @@ data:
   MYSQL_HOST: mysql
   MYSQL_USER: sage-auth
   MYSQL_DATABASE: SAGEDB  # warning: this is still hard-coded
+  SAGE_COOKIE_DOMAIN: ".sagecontinuum.org"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -110,6 +111,11 @@ spec:
             configMapKeyRef:
               name: sage-auth-config
               key: MYSQL_HOST
+        - name: SAGE_COOKIE_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: sage-auth-config
+              key: SAGE_COOKIE_DOMAIN
         ports:
         - containerPort: 80
       restartPolicy: Always

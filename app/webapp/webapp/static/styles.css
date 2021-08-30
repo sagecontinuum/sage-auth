@@ -1,0 +1,127 @@
+body {
+  margin: 0;
+  font-size: 0.875rem;
+  font-family: Roboto;
+  font-weight: 400;
+}
+
+a.no-style:hover {
+  text-decoration: none;
+  }
+
+a {
+  color: #0080c7;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+nav {
+  flex-shrink: 0;
+  position: fixed;
+  top: 0px;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  z-index: 1000;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  padding: 0px 20px;
+  height: 60px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: rgb(0 0 0 / 0%) 0px 2px 4px -1px, rgb(0 0 0 / 0%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px;
+}
+
+nav .logo {
+  font-size: 2.2em;
+  font-family: "Open sans", sans-serif;
+  font-weight: 800;
+  color: rgb(135, 186, 166) !important;
+  margin-bottom: 2px;
+  padding-right: 20px;
+  padding-left: 2px;
+}
+
+nav .logo img {
+  margin-bottom: 2px;
+}
+
+nav .logo sup {
+  position: relative;
+  top: -5px;
+  font-size: 0.3em;
+  color: rgb(170, 170, 170);
+}
+
+nav .divider {
+  height: auto;
+  align-self: stretch;
+  border: none;
+  height: 1px;
+  margin: 0;
+  flex-shrink: 0;
+  background-color: rgba(0, 0, 0, 0.12);
+}
+
+nav .title {
+  margin: 4px 20px 0px;
+  font-weight: 600;
+}
+
+main {
+  margin: 200px auto;
+  width: 425px;
+}
+
+main .container {
+  position: relative;
+  margin: 20px 0px;
+  padding: 15px 30px;
+  border: 1px solid rgb(221, 221, 221);
+  border-radius: 2px;
+  box-shadow: rgb(248 248 248) 0px 0px 1px 1px;
+  color: initial;
+}
+
+/**
+ * layout
+ */
+
+.flex { display: flex; }
+.items-center { align-items: center }
+
+
+/**
+ * basic buttons
+ */
+
+.btn {
+  padding: 1em;
+  color: #666;
+  text-decoration: none;
+}
+
+.btn:hover {
+  opacity: .9;
+  text-decoration: none;
+}
+
+.login-btn {
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  background-color: #3460a1;
+  color: #fff;
+}
+
+.login-btn img {
+  padding-right: .5em;
+}
+
+.login-btn:focus  {
+  outline: 1px dashed black;
+  opacity: .9;
+}
