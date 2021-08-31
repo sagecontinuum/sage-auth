@@ -56,9 +56,15 @@ def home(request, callback = ''):
         try:
             globus_user = request.user.social_auth.get(provider='globus')
         except:
-            uuid = 'some uuid'
-            access_token = 'access_token'
-            refresh_token = 'refresh_token'
+            if settings.DEBUG:
+                uuid = request.user.username
+                username = request.user.username
+
+
+                access_token = 'access_token'
+                refresh_token = 'refresh_token'
+            else:
+                raise Exception("no globus")
         else:
             uuid = globus_user.uid
             social = request.user.social_auth
@@ -107,10 +113,10 @@ def home(request, callback = ''):
     if portal_redirect and access_token:
         response = redirect(portal_redirect)
 
-        token_object = util_create_sage_token(uuid)
+        token_object = util_create_sage_token(sage_username)
         expires = token_object.expires
         response = util_set_cookie(response, 'sage_username', sage_username)
-        response = util_set_cookie(response, 'sage_uuid', uuid)
+        response = util_set_cookie(response, 'sage_uuid', sage_username)
         response = util_set_cookie(response, 'sage_token', token_object.tokenValue)
         response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year))
         response.delete_cookie('portal_redirect')
@@ -152,8 +158,9 @@ def token(request):
         if user_uuid == None:
             return HttpResponse("user_uuid is empty", status=500)
 
+        sage_username = request.user.profile.sage_username
 
-        token_object = util_create_sage_token(user_uuid)
+        token_object = util_create_sage_token(sage_username)
         expires = token_object.expires
 
         response_data['token'] = token_object.tokenValue
