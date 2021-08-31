@@ -10,6 +10,13 @@ spec:
   - host: localhost
     http:
       paths:
+      - path: /static
+        pathType: Prefix
+        backend:
+          service:
+            name: sage-auth-static
+            port:
+              number: 80
       - path: /
         pathType: Prefix
         backend:
@@ -17,11 +24,24 @@ spec:
             name: sage-auth
             port:
               number: 80
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: sage-auth
+spec:
+  ports:
+  - name: web
+    port: 80
+    targetPort: 8000
+  selector:
+    k8s-app: sage-auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sage-auth-static
 spec:
   ports:
   - name: web
@@ -72,10 +92,11 @@ spec:
           - -c
           - while [ $(nc -zv ${MYSQL_HOST} 3306; echo $?) != 0 ] ;
             do echo "wait..." ; sleep 2; done ; python3 manage.py migrate ;
-           python3 manage.py runserver 0.0.0.0:80
+           python3 manage.py collectstatic --no-input ;
+           python3 manage.py runserver 0.0.0.0:8000
         env:
         - name: DEBUG_VALUE
-          value: "TRUE"
+          value: "FALSE"
         - name: Globus_Auth_Client_ID
           valueFrom:
             secretKeyRef:
@@ -117,5 +138,20 @@ spec:
               name: sage-auth-config
               key: SAGE_COOKIE_DOMAIN
         ports:
-        - containerPort: 80
+        - containerPort: 8000
+        volumeMounts:
+          - name: static-files
+            mountPath: /usr/src/app/webapp/webapp/static_root
+      - image: nginx:1.20-alpine
+        name: sage-auth-static
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+          - name: static-files
+            mountPath: /usr/share/nginx/html/static/
+            readOnly: true
       restartPolicy: Always
+      volumes:
+      - name: static-files
+        emptyDir: {}

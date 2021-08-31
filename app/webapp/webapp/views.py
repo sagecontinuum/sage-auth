@@ -123,12 +123,12 @@ def home(request, callback = ''):
 
 
 # todo(nc): mod expiry time for tokens generated via portal
-def util_create_sage_token(user_uuid):
+def util_create_sage_token(user):
     alphabet = string.ascii_uppercase + string.digits
     token_value = ''.join(secrets.choice(alphabet) for i in range(20))
     expires = timezone.now() + timedelta(days=90)
 
-    token_object = Token.objects.create(user=user_uuid, tokenValue=token_value, expires=expires, scope="default")
+    token_object = Token.objects.create(user=user, tokenValue=token_value, expires=expires, scope="default")
 
     return token_object
 
@@ -229,7 +229,7 @@ class TokenInfo(APIView):
         content = {
             "active": True, # Required. This is a boolean value of whether or not the presented token is currently active. The value should be “true” if the token has been issued by this authorization server, has not been revoked by the user, and has not expired.
             "scope": scope, # A JSON string containing a space-separated list of scopes associated with this token.
-            "client_id": user, # The client identifier for the OAuth 2.0 client that the token was issued to.
+            "client_id": "some-client-id", # The client identifier for the OAuth 2.0 client that the token was issued to.
             "username": user, # A human-readable identifier for the user who authorized this token.
             "exp": unix_expires, # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire.
         }

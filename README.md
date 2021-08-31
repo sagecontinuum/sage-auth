@@ -52,8 +52,11 @@ Example token verification:
 ```bash
 curl -X POST -H 'Accept: application/json; indent=4' -H 'Content-Type: application/x-www-form-urlencoded' -H "Authorization: Basic c2FnZS1hcGktc2VydmVyOnRlc3Q=" -d 'token=<SAGE-USER-TOKEN>'  <sage-auth-hostname>:80/token_info/
 ```
-The basicAuth used here is the base64 encoding of `sage-api-server:test`.
+The basicAuth used here is the base64 encoding of `sage-api-server:test`, example:
 
+```console
+echo -n 'sage-api-server:test' | base64 
+```
 
 Example response:
 ```json5
@@ -64,4 +67,15 @@ Example response:
     "username": "<user>",
     "exp": 1591632949      # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire. 
 }
+```
+
+# Dev
+
+
+```console
+
+docker exec -ti sage-auth_db_1 mysql -u root -p -D SAGEDB
+
+pasword: testtest
+
 ```

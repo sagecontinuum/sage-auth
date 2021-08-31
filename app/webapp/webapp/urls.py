@@ -20,6 +20,8 @@ from . import views
 from django.conf.urls import url # for native login
 from django.contrib.auth import views as auth_views # for native login
 from django.conf.urls import url
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [
@@ -35,4 +37,7 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView, name='logout'), # for testing, Django-native logout
     url('', include('django_prometheus.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns = urlpatterns+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

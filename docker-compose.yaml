@@ -17,7 +17,7 @@ services:
           - /testing-entrypoint.sh
     volumes:
         - ${PWD}/testing-entrypoint.sh:/testing-entrypoint.sh:ro
-        - ${PWD}/app/:/usr/src/app
+        #- ${PWD}/app/:/usr/src/app
     ports:
       - "8000:80"
     depends_on:
@@ -27,7 +27,7 @@ services:
       - Globus_Auth_Client_ID="${Globus_Auth_Client_ID}"
       - Globus_Auth_Client_Secret="${Globus_Auth_Client_Secret}"
       - ADD_USER="test,test"
-      - DEBUG_VALUE=TRUE
+      #- DEBUG_VALUE=TRUE
       - SAGE_COOKIE_DOMAIN=".sagecontinuum.org"
 volumes:
   SAGE-AUTH-DB:
