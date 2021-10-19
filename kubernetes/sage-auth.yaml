@@ -4,26 +4,26 @@ kind: Ingress
 metadata:
   name: sage-auth
   annotations:
-    traefik.ingress.kubernetes.io/router.tls: ""
+    #traefik.ingress.kubernetes.io/router.tls: ""
 spec:
-  rules:
-  - host: localhost
-    http:
-      paths:
-      - path: /static
-        pathType: Prefix
-        backend:
-          service:
-            name: sage-auth-static
-            port:
-              number: 80
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: sage-auth
-            port:
-              number: 80
+  # rules:
+  # - host: localhost
+  #   http:
+  #     paths:
+  #     - path: /static
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: sage-auth-static
+  #           port:
+  #             number: 80
+  #     - path: /
+  #       pathType: Prefix
+  #       backend:
+  #         service:
+  #           name: sage-auth
+  #           port:
+  #             number: 80
 
 ---
 apiVersion: v1
@@ -84,14 +84,24 @@ spec:
       labels:
         k8s-app: sage-auth
     spec:
+      initContainers:
+      - name: check-mysql-ready
+        image: busybox:latest
+        command: ['sh', '-c',
+          'until nc -zv ${MYSQL_HOST} 3306; do echo "Waiting for mysql service"; sleep 2; done;']
+        env:
+          - name: MYSQL_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: sage-auth-config
+                key: MYSQL_HOST
       containers:
       - image: waggle/sage-auth:latest
         name: sage-auth
         command:
           - ash
           - -c
-          - while [ $(nc -zv ${MYSQL_HOST} 3306; echo $?) != 0 ] ;
-            do echo "wait..." ; sleep 2; done ; python3 manage.py migrate ;
+          - python3 manage.py migrate ;
            python3 manage.py collectstatic --no-input ;
            python3 manage.py runserver 0.0.0.0:8000
         env:
