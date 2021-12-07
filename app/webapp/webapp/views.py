@@ -98,15 +98,7 @@ def home(request, callback = ''):
 
     # if we have a token, but no username, redirect to "create_profile" viewa
     if access_token and not sage_username:
-        response = redirect('/create-profile')
-
-        token_object = util_create_sage_token(uuid)
-        expires = token_object.expires
-        response = util_set_cookie(response, 'sage_uuid', uuid)
-        response = util_set_cookie(response, 'sage_token', token_object.tokenValue)
-        response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year))
-
-        return response
+        return redirect('/create-profile')
 
     # if we already have a redirect cookie and are logged in,
     # redirect back to original location
@@ -116,7 +108,6 @@ def home(request, callback = ''):
         token_object = util_create_sage_token(sage_username)
         expires = token_object.expires
         response = util_set_cookie(response, 'sage_username', sage_username)
-        response = util_set_cookie(response, 'sage_uuid', sage_username)
         response = util_set_cookie(response, 'sage_token', token_object.tokenValue)
         response = util_set_cookie(response, 'sage_token_exp', "{}/{}/{}".format(expires.month,expires.day,expires.year))
         response.delete_cookie('portal_redirect')
