@@ -27,8 +27,8 @@ docker-compose up
 - Go to [https://auth.globus.org/v2/web/developers](https://auth.globus.org/v2/web/developers).
 - Create a project.
 - Add new app.
-- Add scopes: profile, urn:globus:auth:scope:auth.globus.org:view_identity_set
-- Specify redirect URL: https://<your-domain>/complete/globus/
+- Add scopes: `profile`, `urn:globus:auth:scope:auth.globus.org:view_identity_set`
+- Specify redirect URL: `https://<your-domain>/complete/globus/`
     - This requires SAGE Auth to have an TLS certificate!
 - Generate new client secret
 
