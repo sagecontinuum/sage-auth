@@ -1,5 +1,5 @@
 cryptography==3.4.7
-django==3.2.6
+django==3.2.12
 social-auth-app-django==4.0.0
 python-jose==3.2.0
 mysqlclient==2.0.3
