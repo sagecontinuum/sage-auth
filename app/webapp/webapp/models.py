@@ -17,6 +17,9 @@ class Profile(models.Model):
     organization = models.CharField(max_length=30, blank=True)
     department = models.CharField(max_length=30, blank=True)
 
+    def __str__(self):
+        return '{}; {}'.format(self.user, self.sage_username)
+
 
 
 @receiver(post_save, sender=User)

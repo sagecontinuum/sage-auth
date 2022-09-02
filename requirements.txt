@@ -7,3 +7,4 @@ djangorestframework==3.12.4
 prometheus-client==0.10.1
 django-prometheus==2.1.0
 gunicorn==20.1.0
+django-cors-headers==3.13.0

@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from . import views
+from . import user_api
 
 from django.conf.urls import url # for native login
 from django.contrib.auth import views as auth_views # for native login
@@ -25,6 +26,8 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
+    path('user_profile/<str:username>', user_api.UserProfile.as_view()),
+    path('user_profile/', user_api.UserProfile.as_view()),
     path('token_info/', views.TokenInfo.as_view()),
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),

@@ -43,19 +43,26 @@ INSTALLED_APPS = [
     'social_django',
     'webapp',
     'rest_framework',
-    'django_prometheus'
+    'django_prometheus',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
+]
+
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://\w+\.sagecontinuum\.org$",
 ]
 
 ROOT_URLCONF = 'webapp.urls'
