@@ -26,7 +26,7 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('user_profile/<str:username>', user_api.UserProfile.as_view()),
+    path('user_profile/<str:sage_username>', user_api.UserProfile.as_view()),
     path('user_profile/', user_api.UserProfile.as_view()),
     path('token_info/', views.TokenInfo.as_view()),
     path('admin/', admin.site.urls),

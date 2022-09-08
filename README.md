@@ -3,12 +3,12 @@
 Auth server for SAGE to let users authenticate using their institutional identity provider and create tokens for access to other SAGE resources.
 
 
-# Test environments 
+# Test environments
 
 
 Both test environments described below are not to be used in production, they are only for development/testing purposes!
 
-In production the default login is authentication delegated to Globus Auth, the login will not work in a local deployment without SSL certificate and client registration with the Globus OAuth server. Instead, the test deployments via the docker-compose create a native Django test user (see [testing-entrypoint.sh](testing-entrypoint.sh)) and the developer can login via [http://localhost:8000/login](http://localhost:8000/login) as `test` with password `test`.  
+In production the default login is authentication delegated to Globus Auth, the login will not work in a local deployment without SSL certificate and client registration with the Globus OAuth server. Instead, the test deployments via the docker-compose create a native Django test user (see [testing-entrypoint.sh](testing-entrypoint.sh)) and the developer can login via [http://localhost:8000/login](http://localhost:8000/login) as `test` with password `test`.
 
 
 
@@ -54,8 +54,8 @@ curl -X POST -H 'Accept: application/json; indent=4' -H 'Content-Type: applicati
 ```
 The basicAuth used here is the base64 encoding of `sage-api-server:test`, example:
 
-```console
-echo -n 'sage-api-server:test' | base64 
+```bash
+echo -n 'sage-api-server:test' | base64
 ```
 
 Example response:
@@ -65,17 +65,24 @@ Example response:
     "scope": "default",    # A JSON string containing a space-separated list of scopes associated with this token.
     "client_id": "<user>",
     "username": "<user>",
-    "exp": 1591632949      # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire. 
+    "exp": 1591632949      # The unix timestamp (integer timestamp, number of seconds since January 1, 1970 UTC) indicating when this token will expire.
 }
 ```
 
 # Dev
 
 
-```console
+```bash
 
 docker exec -ti sage-auth_db_1 mysql -u root -p -D SAGEDB
 
 pasword: testtest
 
+```
+
+
+# Tests
+
+```bash
+docker exec -it sage-auth-sage-auth-1 sh -c 'USE_SQLITE3=1 python manage.py test'
 ```

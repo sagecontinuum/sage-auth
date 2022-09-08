@@ -3,10 +3,11 @@ from webapp.models import Token, Profile
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from rest_framework import permissions
 from rest_framework import exceptions
-from rest_framework import authentication
+from rest_framework.serializers import ModelSerializer
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.generics import RetrieveUpdateAPIView
 
 
 
@@ -27,12 +28,25 @@ def get_token_user(token):
     return t_object.user
 
 
-
-class Authentication(authentication.BaseAuthentication):
+class Authentication(BaseAuthentication):
     def authenticate(self, request):
-        token = request.headers.get('Authorization')
+        auth = request.headers.get('Authorization')
 
-        sage_username = get_token_user(token.split(' ')[1])
+        if not auth:
+            raise exceptions.AuthenticationFailed('No Authorization header provided')
+
+        try:
+            [bearer, token] = auth.split(' ')
+        except:
+           raise exceptions.AuthenticationFailed('Invalid format')
+
+        if not token:
+            raise exceptions.AuthenticationFailed('No token provided')
+
+        if bearer.lower() != 'sage':
+            raise exceptions.AuthenticationFailed(f'Invalid bearer: {bearer}')
+
+        sage_username = get_token_user(token)
 
         if not sage_username:
             raise exceptions.AuthenticationFailed
@@ -48,56 +62,29 @@ class Authentication(authentication.BaseAuthentication):
         return (user_profile, None)
 
 
+class UserProfileSerializer(ModelSerializer):
+    class Meta:
+        model = Profile
+        lookup_field = 'sage_username'
+        fields = '__all__'
+        read_only_fields = ['user', 'sage_username']
 
-immutable_fields = ['id', 'user_id', 'sage_username']
 
-class UserProfile(APIView):
+class IsOwner(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return obj.sage_username == request.sage_username
+
+
+'''
+Example requests:
+    curl -H 'Authorization: Sage <token>' localhost:8000/user_profile/<username>
+    curl -X PUT -H "Content-Type: application/json" -H 'Authorization: Sage <token>' localhost:8000/user_profile/<username> -d '{"bio": "some bio"}'
+'''
+class UserProfile(RetrieveUpdateAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = UserProfileSerializer
+    lookup_field = "sage_username"
     authentication_classes = [Authentication]
-
-    def get(self, request, **kwargs):
-        '''
-        Example request:
-            curl -H 'Authorization: Sage <token>' localhost:8000/user_profile/<username>
-        '''
-
-        user_param = kwargs.get('username')
-        username = request.sage_username
-
-        if user_param != username:
-            raise exceptions.AuthenticationFailed
-
-
-        if username:
-            data = Profile.objects.filter(sage_username=username).values()
-        else:
-            data = Profile.objects.all().values() # todo(nc): remove full listing, and allow limited queries
-
-        return Response({'data': data})
-
-
-    def post(self, request, **kwargs):
-        '''
-        Example request:
-            curl -X POST -H "Content-Type: application/json" -H 'Authorization: Sage <token>'
-            localhost:8000/user_profile/<username> -d '{"bio": "some bio"}'
-        '''
-        user_param = kwargs.get('username')
-        username = request.sage_username
-
-        if user_param != username:
-            raise exceptions.AuthenticationFailed
-
-
-        record = Profile.objects.filter(sage_username=username)
-
-        for field in request.data.keys():
-            if field in immutable_fields:
-                continue
-
-            record.update(**{field: request.data[field]})
-
-        return Response(
-            Profile.objects.filter(sage_username=username).values()
-        )
+    permission_classes = [IsOwner]
 
 
