@@ -38,13 +38,13 @@ class Authentication(BaseAuthentication):
         try:
             [bearer, token] = auth.split(' ')
         except:
-           raise exceptions.AuthenticationFailed('Invalid format')
-
-        if not token:
-            raise exceptions.AuthenticationFailed('No token provided')
+            raise exceptions.AuthenticationFailed('Invalid Authorization header format')
 
         if bearer.lower() != 'sage':
             raise exceptions.AuthenticationFailed(f'Invalid bearer: {bearer}')
+
+        if not token:
+            raise exceptions.AuthenticationFailed('No token provided')
 
         sage_username = get_token_user(token)
 
