@@ -1,7 +1,7 @@
-from django import forms
-from django.contrib.auth.forms import UserCreationForm
-from webapp.models import Profile
 import re
+from django import forms
+from .models import Profile
+
 
 class CreateProfileForm(forms.ModelForm):
     sage_username = forms.CharField(
