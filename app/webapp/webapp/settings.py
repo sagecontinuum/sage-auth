@@ -17,7 +17,6 @@ import sys
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -79,7 +78,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',            ],
+                'social_django.context_processors.login_redirect',
+            ],
         },
     },
 ]
@@ -94,7 +94,8 @@ SOCIAL_AUTH_GLOBUS_SECRET = os.environ.get('Globus_Auth_Client_Secret')
 SOCIAL_AUTH_GLOBUS_AUTH_EXTRA_ARGUMENTS = {
     'access_type': 'offline',
 }
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = False if os.environ.get("Globus_Auth_Redirect_To_Localhost") == "1" else True
+
 SAGE_COOKIE_DOMAIN = os.environ.get('SAGE_COOKIE_DOMAIN')
 
 WSGI_APPLICATION = 'webapp.wsgi.application'
