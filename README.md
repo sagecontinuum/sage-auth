@@ -1,5 +1,7 @@
 # SAGE Auth
 
+_**Oct 2022: We have integrated this service's functionality into the following repo: [https://github.com/waggle-sensor/waggle-auth-app](https://github.com/waggle-sensor/waggle-auth-app)**_
+
 Auth server for SAGE to let users authenticate using their institutional identity provider and create tokens for access to other SAGE resources.
 
 # Test environments
